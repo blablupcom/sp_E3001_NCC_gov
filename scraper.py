@@ -36,7 +36,7 @@ def validateURL(url):
             print ("Attempt {0} - Status code: {1}. Retrying.".format(count, r.status_code))
             count += 1
            # r = requests.get(url, allow_redirects=True, timeout=90)
-             r = urllib2.urlopen(url)
+            r = urllib2.urlopen(url)
         sourceFilename = r.headers.get('Content-Disposition')
 
         if sourceFilename:
