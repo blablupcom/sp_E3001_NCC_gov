@@ -30,7 +30,7 @@ def validateFilename(filename):
 def validateURL(url):
     try:
        # r = requests.get(url, allow_redirects=True, timeout=90)
-        r = = urllib2.urlopen(url)
+        r = urllib2.urlopen(url)
         count = 1
         while r.getcode() == 500 and count < 4:
             print ("Attempt {0} - Status code: {1}. Retrying.".format(count, r.status_code))
