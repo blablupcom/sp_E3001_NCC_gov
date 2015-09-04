@@ -7,6 +7,9 @@ import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
+import urllib
+from time import sleep
+from random import randint
 
 # Set up variables
 entity_id = "E3001_NCC_gov"
@@ -28,26 +31,10 @@ def validateFilename(filename):
     if all([validName, validYear, validMonth]):
         return True
 def validateURL(url):
-    try:
-        #r = requests.get(url, allow_redirects=True, timeout=90)
-        r = urllib2.urlopen(url)
-        count = 1
-        while r.getcode() == 500 and count < 4:
-            print ("Attempt {0} - Status code: {1}. Retrying.".format(count, r.status_code))
-            count += 1
-           # r = requests.get(url, allow_redirects=True, timeout=90)
-            r = urllib2.urlopen(url)
-        sourceFilename = r.headers.get('Content-Disposition')
+    validURL = 200
+    validFiletype = '.csv'
+    return validURL, validFiletype
 
-        if sourceFilename:
-            ext = os.path.splitext(sourceFilename)[1].replace('"', '').replace(';', '').replace(' ', '')
-        else:
-            ext = os.path.splitext(url)[1]
-        validURL = r.getcode() == 200
-        validFiletype = ext in ['.csv', '.xls', '.xlsx']
-        return validURL, validFiletype
-    except:
-        raise
 def convert_mth_strings ( mth_string ):
 
     month_numbers = {'JAN': '01', 'FEB': '02', 'MAR':'03', 'APR':'04', 'MAY':'05', 'JUN':'06', 'JUL':'07', 'AUG':'08', 'SEP':'09','OCT':'10','NOV':'11','DEC':'12' }
@@ -59,7 +46,8 @@ def convert_mth_strings ( mth_string ):
     return mth_string
 # pull down the content from the webpage
 html = urllib2.urlopen(url)
-soup = BeautifulSoup(html, "lxml")
+soup = BeautifulSoup(html, 'html.parser')
+
 # find all entries with the required class
 block = soup.find('table', 'downloadTable')
 links = block.findAll('a', href=True)
@@ -70,6 +58,7 @@ for link in links:
     csvMth = csvfile[-1][:2]
     filename = entity_id + "_" + csvYr + "_" + csvMth
     todays_date = str(datetime.now())
+
     file_url = url.strip()
     validFilename = validateFilename(filename)
     validURL, validFiletype = validateURL(file_url)
