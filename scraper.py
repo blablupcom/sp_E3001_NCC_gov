@@ -77,7 +77,7 @@ for link in links:
         print file_url
         errors += 1
         continue
-    scraperwiki.sqlite.save(unique_keys=['l'], data={"l": file_url, "f": filename, "d": todays_date })
+    scraperwiki.sqlite.save(unique_keys=['f'], data={"l": file_url, "f": filename, "d": todays_date })
     print filename
 if errors > 0:
     raise Exception("%d errors occurred during scrape." % errors)
